@@ -232,7 +232,6 @@ def impresora_con_apercibimiento(modelos):
 '''
 Programacion dinamica: Una empresa vende "n" productos. CAda uno tiene un peso, un precio y un stock ilimitado. Deben enviar un contenedor que contenga al menos 1 unidad de cada producto. Desean despachar más productos asegurandose que al venderlos ganar lo maximo posible. La capacidad del contenedor es de "k" kilos. Queremos seleccionar el subconjunto de productos y su cantidad que maximice la posible ganancia.
 '''
-#dp[i] = max(dp[i-1], MAX({elementos.ganancia()}) + dp[i-W]]) donde W es el peso del elemento.
 def mochila_infinita(elementos, k):
     # Paso 1: Incluir al menos una unidad de cada producto
     ganancia_base = 0
@@ -244,9 +243,70 @@ def mochila_infinita(elementos, k):
 
     # Paso 2: Mochila con repetición clásica sobre el peso restante
     dp = [0] * (k + 1)
+    usados = [-1] * k+1
     for peso_actual in range(1, k + 1):
         for elemento in elementos:
             if elemento.peso <= peso_actual:
-                dp[peso_actual] = max(dp[peso_actual], dp[peso_actual - elemento.peso] + elemento.ganancia)
+                if dp[peso_actual] < dp[peso_actual - elemento.peso] + elemento.ganancia:
+                    dp[peso_actual] = dp[peso_actual - elemento.peso] + elemento.ganancia
+                    usados[peso_actual] = elemento
+    reconstruccion = []
+    i = k
+    while i > 0:
+        reconstruccion.append(usados[i])
+        i -= usados[i].peso
+    reconstruccion += elementos
+    return (ganancia_base + dp[k]), reconstruccion
 
-    return ganancia_base + dp[k]
+
+'''
+Redes de Flujo: Una red de comunicación fue publicada como de capacidad ilimitada. Está conformada por un conjunto de servidores y enlaces que conectan pares de estos. Cada enlace tiene una capacidad muy elevada de transmisión. No funciona como esperan. El procesamiento de derivación en cada servidor limita el flujo de datos. Brindarán su red de forma exclusiva para transferir desde un servidor en la red a otro un conjunto de datos. Contamos con la topología de la red y las capacidades de los enlaces y servidores. Determinar si es posible transmitir un volumen de datos X. De no ser posible recomendar justificando qué servidores analizará en primer lugar para aumentar su capacidad.
+'''
+def ff_ek(grafo):
+    #Inicializo todo el flujo en 0
+    #Creo el grafo residual
+    #Mientras haya un camino de aumento entre s y t:
+        #Sea p el camino de aumento
+        #Sea w el cuello de botella
+        #flujo += w
+        #Actualizar el grafo y grafo residual
+    #retornar flujo, grafo residual
+    return f'Siempre azucar nunca edulcorante'
+    
+
+def servidores_saturados(red, servidores, x):
+    s, t = 0, 0
+
+    grafo = Grafo(s, t)
+    for servidor in servidores:
+        grafo.agregar_vertice("servidor_in")
+        grafo.agregar_vertice("servidor_out")
+        grafo.agregar_arista("servidor_in", "servidor_out", servidor.limite)
+    
+    for servidor in servidores:
+        if len(servidor.anteriores) == 0:
+            grafo.agregar_arista(s, "servidor_in", float("inf"))
+        if len(servidor.siguientes) == 0:
+            grafo.agregar_arista("servidor_out", t, float("inf"))
+        for siguiente in servidor.siguientes:
+            grafo.agregar_arista("servidor_out", "siguiente_in", float("inf"))
+
+    flujo, grafo_residual = ff_ek(grafo, s, t)
+    if flujo >= x:
+        return " Completado"
+    alcanzables = set() # Nodos alcanzables desde s en grafo residual
+    no_alcanzables = set()
+    servidores_a_mejorar = set()
+ # Complemento de alcanzables
+    servidores_a_mejorar = []
+    for origen,destino,capacidad in grafo_residual.obtener_aristas():
+        if origen in alcanzables and destino in no_alcanzables and capacidad == 0:
+            servidores_a_mejorar.add(destino)
+        
+
+
+
+    
+'''
+Clases de Complejidad: Una base espacial tiene una capacidad de "k" kilos y puede albergar "p" personas. Se h recibido la peticion de "n" personas. Cada persona "i" requiere un total de "wi" kilos y ofrece "vi" de paogo. ¿Es posible seleccionar al menos X personas y obtener una ganancia minima de Y? Demostrar que el problema es NP-C. (HINT: puede ayudarse con el problema de la mochila).
+'''
