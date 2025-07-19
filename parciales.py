@@ -173,7 +173,7 @@ def max_ganancia_contenedor(productos, indice, seleccionados, capacidad_restante
     
     producto = productos[indice]
 
-    if producto.peso <= capacidad_restante and es_compatible(producto, seleccionados):
+    if producto.peso <= capacidad_restante: #and es_compatible(producto, seleccionados)
         seleccionados.append(producto)
         max_ganancia_contenedor(productos, indice+1, seleccionados, capacidad_restante - producto.pesp, ganancia_parcial + producto.ganancia)
         seleccionados.remove(producto)
@@ -182,4 +182,71 @@ def max_ganancia_contenedor(productos, indice, seleccionados, capacidad_restante
 
 
 
+#PARCIAL 13 DE MAYO DE 2024
 
+'''
+Fuerza Bruta: El juego Sudoku corresponde a ubicar en una grilla de 9x9 numeros del 1 al 9 de forma tal que: (i) no hayan numeros repetidos en la misma fila. (ii) no hayan numeros repetidos en la misma columna. (iii) no hayan numeros repetidos en cada una de las 9 subgrillas 3x3 en las que se puede dividir la grilla. Una instancia es la grilla con un subconjunto de celdas con valor y el resto vacias. Se busca que el jugador relllene als celdas vacias para completar la grilla. Solucionar el problema mediante Backtracking.
+'''
+#Arbol de estados: En la raiz tengo la instancia que me dan, y como hijos tengo escribir un numero en la primer celda libre. Vamos a recorrerlo con DFS 
+#Funcion limite: Que el numero escrito no este repetido en la misma fila, en la misma columna o en la subgrilla de 3x3
+
+def funcion_limite(grilla, celda_actual, valor):
+    #Verificar la columna O(n)
+    #Verificar la fila O(n)
+    #Verificar la subgrilla correspondiente O(n)    
+    return True
+
+def bt_sudoku(grilla, celda_actual):
+    if grilla.esta_completa():
+        return funcion_limite(grilla, celda_actual)
+    for i in range(1, 10):
+        if funcion_limite(grilla, celda_actual, i):
+            celda_actual = i
+            next = celda_actual.proxima()
+            boolean = bt_sudoku(grilla, next)
+            if boolean:
+                return True
+            celda_actual = 0
+    return False, grilla
+    
+'''
+Greedy: Contamos con una impresora 3D. Nos solicitan la impresión de “n” modelos. Cada una tiene un tiempo de impresión y una fecha de entrega. Incumplir con al menos 1 fecha determina un apercibimiento proporcional al retraso más largo ocurrido. La impresora requiere limpieza por lo que queremos lograr - si es posible - descanso entre los trabajos. Desean minimizar el apercibimiento. Presentar un algoritmo greedy para resolver el problema.
+'''
+def impresora_con_apercibimiento(modelos):
+    modelos.sort() # Ordeno los modelos por fecha de deadline creciente
+    mayor_delay = (0,0)
+    tiempo_act = 0
+    for modelo in modelos:
+        prox_tiempo_act = tiempo_act + modelo.duracion
+        if tiempo_act + modelo.duracion < modelo.deadline:
+            limpieza = modelo.deadline - prox_tiempo_act
+            tiempo_act += limpieza
+        tiempo_act += modelo.duracion
+        if tiempo_act < modelo.deadline:
+            continue
+        delay = tiempo_act - modelo.deadline
+        if delay > mayor_delay[1]:
+            mayor_delay = (modelo, delay)
+    return mayor_delay
+
+'''
+Programacion dinamica: Una empresa vende "n" productos. CAda uno tiene un peso, un precio y un stock ilimitado. Deben enviar un contenedor que contenga al menos 1 unidad de cada producto. Desean despachar más productos asegurandose que al venderlos ganar lo maximo posible. La capacidad del contenedor es de "k" kilos. Queremos seleccionar el subconjunto de productos y su cantidad que maximice la posible ganancia.
+'''
+#dp[i] = max(dp[i-1], MAX({elementos.ganancia()}) + dp[i-W]]) donde W es el peso del elemento.
+def mochila_infinita(elementos, k):
+    # Paso 1: Incluir al menos una unidad de cada producto
+    ganancia_base = 0
+    for elemento in elementos:
+        if elemento.peso > k:
+            return "No es posible cumplir la condición de al menos una unidad de cada producto"
+        k -= elemento.peso
+        ganancia_base += elemento.ganancia
+
+    # Paso 2: Mochila con repetición clásica sobre el peso restante
+    dp = [0] * (k + 1)
+    for peso_actual in range(1, k + 1):
+        for elemento in elementos:
+            if elemento.peso <= peso_actual:
+                dp[peso_actual] = max(dp[peso_actual], dp[peso_actual - elemento.peso] + elemento.ganancia)
+
+    return ganancia_base + dp[k]
