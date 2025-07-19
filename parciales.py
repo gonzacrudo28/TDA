@@ -301,12 +301,132 @@ def servidores_saturados(red, servidores, x):
     servidores_a_mejorar = []
     for origen,destino,capacidad in grafo_residual.obtener_aristas():
         if origen in alcanzables and destino in no_alcanzables and capacidad == 0:
-            servidores_a_mejorar.add(destino)
-        
+            servidores_a_mejorar.add(destino) 
+    return servidores_a_mejorar
+'''
+Clases de Complejidad: Una base espacial tiene una capacidad de "k" kilos y puede albergar "p" personas. Se h recibido la peticion de "n" personas. Cada persona "i" requiere un total de "wi" kilos y ofrece "vi" de pago. ¿Es posible seleccionar al menos X personas y obtener una ganancia minima de Y? Demostrar que el problema es NP-C. (HINT: puede ayudarse con el problema de la mochila).
+'''
 
-
-
+def cert_base_espacial(k, p, personas, x, y, sol):
+    if len(sol) < x:
+        return False
+    ganancia_total = 0
+    peso_total = 0
+    for persona in sol:
+        if persona not in personas:
+            return False
+        ganancia_total += persona.ganancia
+        peso_total += persona.peso
     
+    if ganancia_total < y:tareas_restantes
+        return False
+    
+    if peso_total > k:
+        return False
+    
+    return Truetareas_restantes
+
+# Transformacion
+    # Cada elemento es una persona con su peso y ganancia
+    # la capacidad k de la mochila es la misma que la base
+    # el limite p de personas es la cantidad de elementos
+    # la minima ganancia y es igual
+    # la cantidad minima de personas x es 0
+
 '''
-Clases de Complejidad: Una base espacial tiene una capacidad de "k" kilos y puede albergar "p" personas. Se h recibido la peticion de "n" personas. Cada persona "i" requiere un total de "wi" kilos y ofrece "vi" de paogo. ¿Es posible seleccionar al menos X personas y obtener una ganancia minima de Y? Demostrar que el problema es NP-C. (HINT: puede ayudarse con el problema de la mochila).
+Fuerza Bruta: Para un proyecto se definen tareas a realizar. Cada tarea tiene un conjunto de otras (o ninguna) que se deben realizar previamente para encararla. Solo se puede hacer de a una tarea por vez. Para cada tarea de acuerdo al orden en la que se realiza se conoce el costo a abonar. Queremos determinar el orden de todas las tareas para que se gaste lo menos posible y a su vez se cumplan las precedencias. Solucionar con branch and bound.
 '''
+# Mi arbol de estados arranca con ninguna tarea asignada a ningun momento, lo recorro como dfs donde cada ramificacion representa realizar una tarea compatible en el momento i.
+
+def funcion_costo(tareas, costo_parcial, tarea):
+    costo = 0
+    for posicion in lugares_restantes:
+        min_costo = float("inf")
+        for tarea in tareas_restantes:
+            if tarea[posicion] < min_costo:
+                min_costo = tarea[posicion]
+        costo += min_costo
+
+    return min_costo + costo_parcial
+
+mejor_solucion = None
+mejor_costo = 0
+
+
+def min_gasto_proyecto(momento_actual, tareas, sol_parcial, costo_parcial):
+    if momento_actual == len(tareas):
+        if costo_parcial < momento_actual.mejor_costo:
+            mejor_costo = costo_parcial
+            mejor_solucion = sol_parcial
+        return 
+        
+    for tarea in tareas:
+        if tarea not in sol_parcial and tarea.es_compatible(sol_parcial):
+            cota = funcion_costo(tareas, costo_parcial, tarea)
+            if cota > mejor_costo:
+                continue
+            sol_parcial.append(tarea)
+            min_gasto_proyecto(momento_actual+1, tareas, sol_parcial, costo_parcial + tarea.costo)
+            sol_parcial.remove(tarea)
+
+
+'''
+Programación dinámica: Un amigo está creando en un estudio de grabación su primer álbum. La sala tiene disponibilidad para los siguientes “n” días. Como cree en el tarot consultó a una adivina que le indicó día por día qué cantidad de avance pueden lograr si se presentan. Cada día que se juntan, el baterista y el bajista terminan la jornada en un bar compartiendo tragos hasta el amanecer. Esto impide que al día siguiente puedan volver a grabar. Ayude a maximizar el avance.
+''' 
+
+
+# OPT [0] = 0
+# OPT[i] = max(OPT [i - 1], OPT[i - 2] + i.avance)
+
+# Opt[i]: el mayor avance hasta el dia i
+
+def estudio(dias):
+    solucion = []
+    OPT = [0] * (n + 1)
+    OPT [1] = dias[1][0]
+    for i in range (2, n+1):
+        incluyo = OPT[i-2] + dias[i][0]
+        no_incluyo = OPT[i-1]
+        if incluyo > no_incluyo:
+            OPT[i][0] = incluyo
+            solucion.append(dias[i])
+        else:
+            OPT[i][0] = no_incluyo
+            solucion.append(dias[i])
+        
+    return solucion, OPT[-1]
+
+''' 
+**Redes de Flujo:** Ante una emergencia una empresa debe movilizar “n” empleados a sus “c” centros estratégicos en la ciudad. Cada empleado ante el requerimiento transmite su ubicación geográfica a un servidor y este – conociendo la posición de todos los empleados y de los centros – le indica a qué centro debe presentarse. Por cuestiones operativas, los empleados se deben distribuir de forma balanceada en los centros y no deben tener que viajar más de k kilómetros para llegar al centro. Elaborar un algoritmo que resuelva el problema de asignación mediante redes de flujo.
+'''
+
+'''
+Clase de Complejidad: Definimos el problema del Hitting Set como: dado un conjunto finito S de n elementos, una colección C de subconjuntos de S, y un número positivo K ≤ n, ¿existe un subconjunto S' ⊆ S tal que S' contiene al menos un elemento de cada subconjunto de C y |S'| ≤ K? Demostrar que este problema es NP-Completo (HNT) puede ayudarse con el problema vertex cover.
+'''
+def certificador(S, colecciones, solucion, k):
+    if len(solucion) > k:
+        return False
+    colecciones_cubiertas = set()
+    for numero in solucion:
+        if numero not in S:
+            return False
+        # Agregar todas las colecciones al set donde aparezca numero.
+
+    if colecciones_cubiertas != colecciones:
+        return False
+    
+    return True
+
+def pasar_a_VC(grafo, k):
+    s = set()
+    c = set()
+    
+    for v in grafo:
+        s.add(v)
+    
+    for origen,destino in grafo.obtener_aristas():
+        c.add(set(origen,destino))
+    
+    k_prima = k
+
+    #hitting_set(s, k_prima, c)
