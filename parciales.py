@@ -430,3 +430,34 @@ def pasar_a_VC(grafo, k):
     k_prima = k
 
     #hitting_set(s, k_prima, c)
+
+'''
+Fuerza Bruta: El problema de coloreo de grafos intenta asignar un color a cada nodo de forma tal que ningún par de nodos adyacentes comparten el mismo color. Sea el grafo G=(V,E) se desea obtener una coloración de no más de k colores. Resuelva utilizando Backtracking.
+'''
+
+def coloreo():
+    
+
+    visitados = set()
+    def bt_colores(grafo, nodo, colores):
+        if len(visitados) == len(grafo.vertices()):
+            return grafo
+        
+        for color in colores:
+            nodo.pintar(color)
+            visitados.add(nodo)
+            if es_valido_color(grafo): #La funcion es valido chequea si alguno de los adyacentes tiene el mismo color
+                for adyacente in nodo.ady():
+                    if adyacente not in visitados:
+                        bt_colores(grafo, adyacente, colores)
+                    if not bt_colores(grafo, adyacente, colores):
+                        break
+            nodo.despintar()
+            visitados.remove(nodo)
+
+    for v in grafo:
+        if v not in visitados:
+            es_valido = bt_colores(G, v, colores)
+            if not es_valido:
+                return False
+    return grafo
