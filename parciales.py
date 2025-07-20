@@ -461,3 +461,142 @@ def coloreo():
             if not es_valido:
                 return False
     return grafo
+
+'''
+Greedy: La costa de un país cuenta con “n” faros. Cada faro “i” cubre una cantidad de kilómetros de costa lineal no interrumpida a su alrededor comenzando por el kilómetro si y finalizando en el kilómetro ei. Muchos de esos faros se solapan en su cobertura, incluso algunos están totalmente cubiertos entre sí. Para minimizar la asignación de personal que requieren nos solicitan que seleccionemos el menor subconjunto de faros que cubran totalmente la línea costera o afirmar que no es posible. Proponga un algoritmo greedy que lo resuelva.
+'''
+def ubicar_faros(faros): # Faro = (si, ei)
+    faros.sort() #Ordenar por fecha de inicio en caso de empate, ordenar por orden descente segun ei.
+    inicio = 0
+    pos_actual = 0
+    sol = set()
+    candidato = 0
+    
+    for faro in faros:
+        
+        if inicio < faro.si:
+            pos_actual=max(pos_actual, faro.ei)
+        else:
+            sol.add(candidato)
+            inicio = faro.anterior().ei
+            candidato = faro
+            pos_actual = faro.ei
+
+'''
+Programación dinámica: El dueño de un salón de convenciones debe decidir a qué exposiciones y congresos alquilará en los próximos meses. Ha reunido “n” propuestas cada una de ellas con una ganancia diferente según los servicios solicitados. Algunos de ellos se superponen entre sí. Para cada propuesta conoce: fecha de inicio, fecha de finalización, monto a ganar por realizarlo. Planea elegir las que duren menos. Mostrar que esta solución no es óptima. Proponer una solución utilizando programación dinámica que responda propuestas elegir y cuánto se puede ganar.
+'''
+
+ # OPT [0] = 0
+ # OPT [i] = max(OPT[i - 1], OPT [pi] + gi) Siendo pi el ultimo compatible con i
+
+def congreso(propuestas):
+    n = len(propuestas)
+    propuestas.sort()# ordeno las charlas por fin
+    dp = [0] * n + 1
+    for i in range(1, n + 1):
+        enOptimo = propuestas[i].ganancia + dp[propuestas[i].ultimo_compatible()]
+        noEnOptimo = dp[i-1].ganancia()
+        if enOptimo > noEnOptimo:
+            dp[i] = enOptimo
+        else:
+            dp[i] = dp[i-1] 
+    
+    dp[n]
+    sol = []
+    i = n
+    while i > 0:
+        if dp[i] == dp[i-1]:
+            i-=1
+        else:
+            sol.append[propuestas[i]]
+            i = ultimo_compatible(i)
+    
+    return sol.reverse(), dp[n]
+
+'''
+Clases de Complejidad: Para elaborar un juego de aventura gráfica se juntaron “m” equipos de diseñadores para proponer diferentes escenarios. No todos los escenarios son compatibles entre sí. Por cada una de las “n” escenarios han anotado que equipo lo propuso y con cuales otros no es compatible. Desean poder seleccionar “k” escenarios compatibles para construir el juego. Se requiere que todos los escenarios pertenezcan al mismo equipo de diseñadores. Se pide: Demostrar que el problema es NP-Completo. (HINT!: Tal vez le resulte útil clique)
+'''
+
+def certificador(k, solucion, equipos, escenarios):
+
+    if len(solucion) != k:
+        return False
+    equipo = solucion[0].equipo()
+    if equipo not in equipos:
+        return False
+    for escenario in solucion:
+        if not escenario.es_compatible(solucion - [escenario]):
+            return False
+        if escenario not in escenarios:
+            return False
+        if escenario.equipo != equipo:
+            return False
+
+    return True
+
+
+#transformacion
+# Cada nodo es un escenario
+# Los nodos unidos son los compatibles entre si
+# Todos los escenarios pertenecen a un mismo equipo
+# K es el mismo
+# Juego_aventura(escenarios, k, compatibles, equipo)
+
+#PARCIAL 16 DE DICIEMBRE 2024
+'''
+Fuerza Bruta: Se cuenta con 'n' fábricas por construir y la misma cantidad de ciudades donde ubicarlas. En cualquier ciudad se puede establecer 1 y solo 1 fábrica. Tenemos un estimado de la ganancia a obtener por asignar cada fábrica a cada ciudad. Queremos asignarlas de forma tal de maximizar la ganancia total. Proponer un algoritmo por branch and bound que resuelva este problema de asignación.
+'''
+#Arbol de estados: Inicialmente todas las ciudades vacías. En cada nivel se evalúa poner una fabrica en la ciudad i. Cada hijo es poner una fabrica en las ciudades restantes.
+
+def funcion_costo(fabricas, ciudades, ganancia_parcial):
+    cota = 0
+    for ciudad in ciudades:
+        if not ciudad.esta_usada():
+            cota += max(ciudad.fabricas_disponibles())
+    return cota + ganancia_parcial
+mejor_solucion = set()
+maxima_ganancia = 0
+usados = set()
+def bb_fabricas(fabricas, ciudades, ganancia_parcial, solucion_parcial,ciudad_actual):
+    if len(solucion_parcial) == len(ciudades):
+        if mejor_ganancia < ganancia_parcial:
+            mejor_ganancia = ganancia_parcial
+            mejor_solucion = solucion_parcial
+        return 
+    cota = funcion_costo(fabricas, ciudades, ganancia_parcial)
+    if cota < mejor_ganancia:
+        return
+    for fabrica in fabricas:
+        if fabrica not in usados:
+            usados.add(fabrica)
+            ciudades[ciudad_actual] = fabrica
+            nueva_ganancia = ganancia_parcial+fabrica.ganancia()
+            bb_fabricas(fabricas, ciudades, ganancia_parcial+fabrica.ganancia(), ciudad_actual + 1)
+            usados.remove(fabrica)
+            ciudades[ciudad_actual] = None
+    
+
+'''
+Greedy: Contamos con cartas numeradas del 1 al 'n' mezcladas en un orden desconocido. Debemos seleccionar de a una, mirarla y acomodarla en pilas. Una carta puede formar una pila nueva o ubicarse en una existente siempre que la carta superior en esta sea un número mayor. Queremos ubicar todas las cartas en la menor cantidad de pilas posible. Resolver el problema con la menor complejidad posible y demostrar optimalidad.
+'''
+def solitario(pilas, cartas):
+    for carta in cartas:
+        if pilas.esta_vacia():
+            pilas.append(Pila(carta)) #Creo una pila con la carta en el tope
+            continue
+        idx = buscar_idx_pila(pilas, carta, 0, len(pilas), -1)
+        if idx == -1:
+            pilas.append(Pila(carta))
+            continue
+        pilas[idx].apilar(carta)
+    return pilas
+
+def buscar_idx_pila(pilas, carta, inicio, fin, candidato):
+    if inicio > fin:
+        return candidato
+    medio = (inicio + fin) / 2
+    if pilas[medio].tope() < carta:
+        return buscar_idx_pila(pilas, carta, medio + 1, fin, candidato)
+    if pilas[medio].tope() > carta:
+        candidato = medio
+        return buscar_idx_pila(pilas, carta, inicio, medio, candidato)

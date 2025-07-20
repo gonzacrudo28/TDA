@@ -29,3 +29,5 @@
 #             agrego arista (nodo, adyacente) a c_m
 
 #Si quiero reducir el flujo un x %. Obtengo el flujo, el corte minimo y, de este ultimo, elimino ese porcentaje de aristas del corte
+
+#Si quiero saber asignaciones, utilizo el grafo residual,para cada arista que una dos conjuntos (vehiculos, estacionamientos), si estan saturadas, la asignacion es esa.
