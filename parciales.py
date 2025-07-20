@@ -1038,3 +1038,22 @@ def closest_pairs_rec(px, py):
     # elif d(q0, q1) < d(r0, r1): return q0, q1
     # else: return r0, r1
     return 0
+
+# Cambio minimo dinamica
+# opt[i]: cantidad minima de monedas para devolver i pesos
+# opt[i]: 1 + min{opt[i-j]} donde j <= i
+
+def cambio_minimo(sist_monetario, dinero):
+    cant = [float("inf")] * (dinero + 1)
+    cant[0] = 0
+
+    monedas_usadas = [[] for valor in sist_monetario]
+    monedas_usadas[0] = []
+    for i in range(1, dinero + 1):
+        for moneda in sist_monetario:
+            if moneda <= i:
+                if cant[i-moneda] < cant[i]:
+                    cant[i] = 1 + cant[i - moneda]
+                    monedas_usadas[i] = monedas_usadas[i-moneda] + [moneda]
+
+    return cant[dinero], monedas_usadas[dinero]
