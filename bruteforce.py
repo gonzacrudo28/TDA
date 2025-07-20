@@ -102,9 +102,6 @@ def buscar_asignacion(trabajo_act, costo_parcial, costos):
     for c in range(0, n):
         if c not in usados:
             nuevo_costo = costo_parcial + costos[trabajo_act][c]
-
-            if nuevo_costo > mejor_costo:
-                continue
             
             usados.add(c)
             sol_act[trabajo_act] = c

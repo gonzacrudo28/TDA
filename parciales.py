@@ -600,3 +600,142 @@ def buscar_idx_pila(pilas, carta, inicio, fin, candidato):
     if pilas[medio].tope() > carta:
         candidato = medio
         return buscar_idx_pila(pilas, carta, inicio, medio, candidato)
+    
+'''
+Programación dinámica: Sea G=(V,E) un grafo dirigido. No se conoce un algoritmo polinomial para encontrar el camino más largo simple (El largo del camino corresponde a la cantidad de nodos por los que pasa). Sin embargo, para ciertos casos se puede resolver en forma eficiente. Consideremos que G corresponde a un grafo ordenado. En este caso se pueden disponer ordenados los nodos de forma que:
+
+i) Desde cada nodo pueden existir ejes salientes a nodos con mayor "índice" (posteriores en su ordenamiento) pero no a nodos de menor índice.
+ii) Cada nodo excepto el último tiene ejes salientes.
+
+Proponer un algoritmo eficiente que resuelva este problema.
+'''
+# dp[i] : El camino mas largo que arranca en i y termina en n
+
+def camino_simple_mas_largo(grafo):
+    n = len(grafo)
+    dp = [1] * (n + 1)
+    dp[n] = 1
+    next = [-1] * (n + 1)
+    for i in range(1, n, -1):
+        max_path = 0
+        idx = -1
+        for j in range(i + 1, n + 1):
+            if grafo.hay_arista(i, j):
+                if dp[j] > max_path:
+                    max_path = dp[j]
+                    idx = j
+        dp[i] = max_path + 1
+        next[i] = idx
+    
+    max_path = 0
+    idx_start = -1
+
+    for i in range(1, n+1):
+        if dp[i] > max_path:
+            max_path = dp[i]
+            idx_start = i
+    
+    camino = []
+    indice = idx_start
+    while indice != -1:
+        camino.append(indice)
+        indice = next[indice]
+    
+    return max_path, camino
+
+
+
+'''
+Clases de Complejidad: Definimos el problema Subgrafo denso de la siguiente manera: Dado un grafo G=(V,E) y dos parámetros a y b. ¿Existe en G un subconjunto S de al menos “a” vértices con al menos “b” ejes entre ellos? Demostrar que este problema es NP-Completo. Sugerencia: Utilizar el problema del Clique.
+'''
+
+def certificador_subgrafo_denso(sol, grafo, a, b):
+    if len(sol) < a:
+        return False
+    for v in sol:
+        if v not in grafo:
+            return False
+    aristas_sol = set()
+    for v in grafo:
+        for w in grafo.adacentes(v):
+            if grafo.arista(v, w) not in aristas_sol:
+                aristas_sol.add(grafo.arista(v, w))
+    
+    if len(aristas_sol) < b:
+        return False
+    return True
+
+
+# Instancia clique:
+# Grafo, k
+# Buscas un subgrafo completo de al menos k vertices
+
+# Transformacion:
+    # El grafo es el mismo
+    # a = k
+    # b = k*(k-1)/2 <-Buena de eze esta
+    # subgr
+
+
+#ULTIMO PARCIAL WHATSAPP
+
+'''
+División y conquista: Dado un vector A de 'n' números enteros (tanto positivos como negativos) queremos obtener el subvector cuya suma de elementos sea mayor a la suma de cualquier otro subvector en A.
+Ejemplo: Array: [-2, -5, 6, -2, -3, 1, 5, -6]
+Solución: [6, -2, -3, 1, 5]
+Resolver el problema de subarreglo de suma máxima por división y conquista.
+'''
+
+def max_sub_arr(arreglo, inicio, final):
+    if inicio == final:
+        return arreglo[inicio]
+    medio = (inicio + final) // 2
+    max_izq = max_sub_arr(arreglo, inicio ,medio)
+    max_der = max_sub_arr(arreglo, medio + 1, final)
+    max_cruzado = arreglo.maximo_subarreglo_cruzado()
+    return max(max_izq, max_der, max_cruzado)
+
+'''
+Programación dinámica: El problema de maximización del set independiente con pesos es NP-Hard. Sin embargo, para algunos casos especiales de grafos se puede resolver de forma eficiente. Considerar el siguiente caso: Un grafo es un camino si se pueden escribir sus nodos como una sucesión V1, V2, ..., Vn donde cada nodo Vi tiene un eje únicamente con Vi-1 y Vi+1. (Excepto en los extremos donde solo tienen un eje con el siguiente o el anterior). Considerar que cada nodo tiene un peso entero positivo. Construir un algoritmo utilizando programación dinámica que encuentre el set independiente que sume el mayor peso.
+'''
+#dp[0] = 0
+#dp [1] = 1.ganancia()
+#dp[2] = max(dp[1], dp[2])
+#dp[i] = max(dp[i-1], dp[i-2] + i.peso())
+def dp_max_set_ind(grafo):
+    n = len(grafo)
+    dp = [0] * (n+1)
+    dp[1] = grafo[1].ganancia()
+    for i in range (2, n+1):
+        enOptimo = dp[i-2] + grafo[i].ganancia()
+        noEnOptimo = dp[i-1]
+        if enOptimo > noEnOptimo:
+            dp[i] = enOptimo
+        else:
+            dp[i] = noEnOptimo
+    i = n
+    sol = set()
+    while i > 0:
+        if dp[i] == dp[i-1]:
+            i -= 1
+        else:
+            sol.add(grafo[i])
+            i-=2
+    return dp[n], sol
+
+'''
+Redes de Flujo: Dentro de una cuadrícula de n*n celdas hay posiciones de paso y prohibidas. Inicialmente en “p” posiciones al azar se colocan mangueras. También al azar se ubican “p” incendios. El objetivo es lograr estirar las mangueras llevándolas a los incendios. Los movimientos permitidos por las celdas son verticales y horizontales. Por donde pasa una manguera no puede pasar otra. Nos solicitan que determinemos cómo lograr el objetivo o indicar que no es posible.
+'''
+
+# Para la reconstruccion simplemente agarro el grafo original y me fijo desde cada nodo que representa una celda donde arranca una manguera cuales de sus aristas contienen flujo 1, o sea que pasaron por ahi. Asi hasta llegar a un incendio y completar el camino de esa manguera.
+
+'''
+Clases de Complejidad: Un inspector debe recorrer “n” aeropuertos. Conoce el precio de cada vuelo directo disponible (no necesariamente todos los aeropuertos tienen vuelos directos que los unan). El valor de cada viaje lo paga su compañía y le piden que el precio por trayecto no supere un máximo de “p” pesos. No se puede visitar el mismo aeropuerto más de una vez y debe empezar y terminar en el mismo lugar. Demostrar que resolver este problema es NP-C (HINT: Tal vez le resulte útil ciclo hamiltoniano).
+'''
+
+# Transformacion
+# Cada nodo representa un aeropuerto
+# Cada arista entre u y v, representa que existen vuelos entre u y v
+# El parametro p se setea en infinito ya que no es una restriccion en ciclo hamiltoniano
+# Llamo a problema_aeropuertos(aeropuertos, p = inf)
+
