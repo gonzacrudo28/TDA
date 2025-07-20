@@ -739,3 +739,302 @@ Clases de Complejidad: Un inspector debe recorrer “n” aeropuertos. Conoce el
 # El parametro p se setea en infinito ya que no es una restriccion en ciclo hamiltoniano
 # Llamo a problema_aeropuertos(aeropuertos, p = inf)
 
+
+'''
+Clases de complejidad:
+La organización de un workshop internacional debe coordinar las
+fechas de paneles de exposición. En cada panel se presentan un
+conjunto de oradores. Un orador puede estar en varios paneles. Se
+cuenta con un total “j” jornadas diferentes donde se pueden
+establecer paneles. Se desea generar un procedimiento eficiente
+para decidir si es posible cumplir con cumplir con todos los
+paneles con todos sus oradores. En caso afirmativo, dar una
+posible asignación de paneles por jornada.
+Se pide: Demostrar que el problema es NP-Completo.
+HINT: Se puede utilizar K-coloreo de grafos.
+'''
+
+def certificador_workshop(sol, paneles, jornadas):
+    # Para cada jornada en la solucion chequeo que tenga al menos un panel asociado
+    # Chequeo que en una misma jornada no haya un orador miembro de mas de un panel de esa jornada
+    # Chequeo que todos los oradores existan y que esten en su panel/paneles correspondientes 
+    return 0
+
+# Transformacion
+    # Cada vertice se transforma en un panel
+    # Cada arista u-v refleja que el panel u y el panel v comparten oradores
+    # El numero de coloreo k pasa a ser el numero de jornadas j
+    # workshop(paneles, j)
+
+
+# 2 de agosto 2021
+
+'''
+Greedy:
+El proceso de aprobación de trámites de la “central burocrática”
+está dividido en 2 partes. La primera parte consiste en una
+entrevista personalizada cuya duración se puede conocer según el
+tipo de trámite. La segunda parte es la revisión de la
+documentación cuya duración se calcula previamente mediante una
+fórmula matemática en función de la persona solicitante. Cada día
+se citan “n” personas. Cada una para realizar un trámite. Por cada
+persona se cuenta, entonces, con su tiempo de la etapa 1 y su
+tiempo de la etapa 2. La etapa 1 únicamente la realiza 1 empleado.
+Para la etapa 2, hay una cantidad ilimitada de personal para
+realizarla. Nuestra tarea es determinar el orden de atención para
+cada una de las “n”. El objetivo es minimizar el tiempo total de
+la jornada laboral.
+Presentar una solución greedy que resuelva el problema. Explicar
+la optimalidad del mismo.
+'''
+
+def minimo_tiempo_tramites(personas):
+    personas.sort() # Ordeno personas por t2 decreciente
+
+    t_global = 0
+    t_tramite_1 = 0
+    for persona in personas:
+        t_tramite_1 += persona.t1
+        t_final_persona = t_tramite_1 + persona.t2
+        if t_final_persona > t_global:
+            t_global = t_final_persona
+    
+    return t_global
+
+'''
+Programación dinámica:
+Recordemos al problema 2-Partition: Se cuenta con un conjunto de
+“n” elementos. Cada uno de ellos tiene un valor asociado. Se desea
+separar los elementos en 2 conjuntos que cumplan con: La suma de
+los valores de cada conjunto sea igual entre ellos. Se puede ver
+que este corresponde a un problema NP-C. Sin embargo - al igual
+que otros problemas en esta clase como el problema de la mochila -
+puede ser resuelto utilizando programación dinámica.
+Proponga un algoritmo utilizando programación dinámica que
+resuelva cualquier instancia de 2-Partition. Analice su
+complejidad temporal y espacial.
+'''
+
+def two_partition(arr):
+    total = sum(arr)
+    if total % 2 !=0: return None
+
+    n = len(arr)
+    target = total / 2
+    dp = [False] * (target+1)
+    dp[0] = True
+    padre = [-1] * (target+1)
+    for i in range(0, n+1):
+        num = arr[i]
+        if num > target:
+            continue
+        
+    return
+
+'''
+Redes de Flujo:
+Para satisfacer la producción de un producto electrónico una
+empresa debe comprar un componente a sus diferentes proveedores.
+Cada proveedor tiene una cantidad máxima que puede ofrecer
+mensualmente. Además las diferentes plantas de producción demandan
+una cantidad mensual del mismo. Por cuestiones logísticas algunos
+proveedores no pueden enviar a ciertas plantas de producción. El
+mes próximo por una promoción se va a tener que producir al 100%
+de la capacidad. Determinar en forma eficiente si es posible
+satisfacer esta demanda.
+Explicar detalladamente y paso a paso la solución propuesta.
+Analizar complejidad
+'''
+
+'''
+Clases de Complejidad / Reducciones:
+Un instituto de enseñanza debe coordinar las fechas de exámenes
+finales de sus respectivos cursos. En cada curso se anotaron
+varios alumnos. Y un alumno puede estar en varios cursos. En total
+se cuenta con “k” fechas posibles de examen. Se desea generar un
+procedimiento eficiente para decidir si es posible cumplir con ese
+requerimiento. En caso afirmativo, dar una posible asignación de
+exámenes por fecha.
+Se pide: Demostrar que el problema es NP-Completo.
+HINT: Se puede utilizar K-coloreo de grafos.
+'''
+
+# Igual que los paneles y oradores
+
+# 5 de abril de 2021
+
+'''
+1) Luego de aprender programación dinámica un estudiante en una
+charla de café le explica a un amigo que atiende un negocio el
+algoritmo de cambio mínimo de monedas. Con eso, afirma, podrá
+optimizar el despacho de mercadería. El comerciante despacha
+pedidos de cierto producto que viene en empaques prearmados de
+distintas cantidades o en unidades sueltas. Sin embargo, el amigo
+le replica que su algoritmo es poco realista. Supone que uno tiene
+una cantidad ilimitada de empaques de cada presentación. Luego de
+pensar unos momentos, el estudiante llega a una variante de este
+problema teniendo en cuenta esta restricción. ¿Podría usted
+detallar cuál es esta solución? Describa paso a paso y explique
+con un ejemplo cómo funciona.
+'''
+
+
+'''
+Greedy:
+Un centro de distribución de repuestos ferroviarios se
+encuentra en un punto de la red de este transporte. Es la
+encargada de distribuir a demanda los materiales y recursos para
+las reparaciones que solicitan las diferentes estaciones. Como la
+red es antigua y está mal mantenida la cantidad de kilos que se
+puede transferir sobre cada trayecto es variable. Esto para ellos
+es un problema porque quieren enviar la mayor cantidad posible de
+material por viaje. Tanto es así que no les importa realizar un
+camino más largo siempre que eso implique transportar más
+materiales.
+Se pueden armar diferentes caminos que unan el centro de
+distribución con cada estación. Estos estarán conformados por una
+secuencia de trayectos, cada uno con su propia limitación de kilos
+que soporta. Llamamos cuello de botella al valor mínimo entre
+ellos.
+Construir un algoritmo greedy que permita calcular el camino con
+el máximo cuello de botella entre el punto de partida y el resto
+de los puntos. ¿Qué complejidad tiene? Demuestre que es óptima su
+solución.
+'''
+
+# Resuelto en guia
+
+'''
+Para el desarrollo de un circuito digital se requiere construir
+“n” caminos por donde pasará corriente eléctrica. Por diseño cada
+uno de esos caminos debe empezar en un determinado punto y
+finalizar en otro. Por supuesto, estos caminos no deben cruzarse.
+Para la construcción de este circuito se cuenta diferentes capas
+conductoras en los que se pueden imprimir diferentes caminos. Pero
+esto se puede abstraer como una grafo donde cada vértice
+corresponde a una región por la puede pasar un camino y los ejes
+las regiones circundantes con las que puede conectarse.
+Se pide: Demostrar que el problema es NP-Completo.
+HINT: El problema se puede ver como “Node-disjoint directed path
+problem”. Pruebe con “3-SAT”
+'''
+
+# Preguntar
+
+# 14 de Abril 2021
+
+'''
+Para un evento a realizar se requiere conformar una selección
+musical entre el conjunto A de “n” canciones. Podemos enumerar a
+los elementos de A como a1,a2,...,an. Por otra parte, contamos con
+un conjunto “B” de “m” personas. Cada una de ellas con un subsets
+de esas canciones que le gustan. Deseamos saber si podemos
+seleccionar un subconjunto de no más de “k” canciones, de tal
+forma que existe al menos 1 canción que le gusta a cada uno.
+Se pide: Demostrar que el problema es NP-Completo.
+HINT: Se puede utilizar Vertex Cover.
+'''
+
+# Cada vertice es una cancion
+# cada arista u-v es una persona que le gustan las canciones u y v
+
+# 23 de Agosto 2021
+
+'''
+Redes de Flujo:
+Una ciudad tiene una red inalámbrica interna para interconectar
+diferentes servidores de varias instituciones públicas. Existen un
+conjunto "A" de antenas de interconexión que están dispersas por
+la ciudad. Cada una de ellas tiene una localización "x,y", un
+alcance de recepción limitado (un radio "R_a") y una cantidad
+máxima de conexiones que puede tener en forma simultánea. Se
+recopiló una lista "S" de servidores, cada uno de ellos con su
+ubicación "x,y"
+Determinar si es posible que todos los servidores pueden estar
+conectados a una antena respetando las restricciones impuestas.
+Explique paso a paso la solución propuesta y analice su
+complejidad temporal.
+'''
+
+'''
+Clases de Complejidad / Reducciones:
+Se requiere realizar un viaje a través de un territorio de difícil
+acceso. El mismo se encuentra dividido en zonas por las que se
+debe pasar. Existen m facciones que controlan algunas de esas
+zonas. Una facción puede controlar más de 1 zona y una zona puede
+ser controlada por más de una. Para poder realizar el viaje se
+debe pactar con alguna de estas. Cada pacto con una facción nos
+asegura el paso seguro por todas las zonas que controlan
+independientemente de si alguna de sus zonas son también
+controladas por otras facciones. Deseamos saber si es posible
+pactar con no más de k facciones para poder concretar el viaje de
+forma segura.
+Se pide: Demostrar que el problema es NP-Completo.
+HINT: Se puede utilizar Vertex Cover.
+'''
+
+# Cada nodo es una faccion
+# Cada arista u-v es una zona controlada por las facciones u y v
+
+
+'''
+Redes de Flujo:
+Una empresa de autobuses se conformó luego de la fusión de varias
+compañías menores. Actualmente tienen diferentes rutas que cubrir.
+Cada una con horario de inicio en una ciudad y finalización en
+otra. Existe la posibilidad de cubrir con un mismo micro
+diferentes rutas.
+Siempre la ruta comienza desde donde parte el micro, pero también
+puede pasar que el micro tenga tiempo suficiente para trasladarse
+hasta otro punto y cubrir otra ruta. Cuentan con una flota activa
+de N micros. Necesitan saber si les es posible cubrir con ella los
+requerimientos o si requieren contar con micros extra.
+Resolver el problema utilizando como parte del mismo redes de
+flujo. Analice su complejidad temporal y espacial.
+'''
+
+# Aristas con limite inferior cero
+
+'''
+Clases de Complejidad / Reducciones:
+El proyecto de colonización de Marte lleva años desarrollándose en
+secreto. En una nueva etapa se requieren N granjeros-espaciales
+para terraformar una hectárea del suelo marciano. Se realizó una
+amplia búsqueda de candidatos “r” (r>>n), siendo todos ellos
+capaces. Dadas las duras condiciones que enfrentarán, es
+primordial que sean compatibles entre ellos. Se realizaron
+complejos estudios psicológicos y se construyó una tabla donde
+para cada granjero se indica con cuáles otros puede trabajar sin
+conflictos. En este momento quieren saber si los candidatos
+disponibles pueden armar la tripulación necesaria.
+Demuestre que lo solicitado es NP-COMPLETO
+HINT!: Tal vez le resulte útil clique
+'''
+
+# Cada nodo es un granjero
+# Cada arista u-v es una compatibilidad del granjero u con v
+
+# Puntos mas cercanos en un plano
+
+def closest_pairs_rec(px, py):
+    # if len(px) <= 3: return el mínimo de comparar cada punto
+    
+    # Construir Qx, Qy, Rx, Ry (O(n))
+    
+    # q0, q1 = closest_pairs_rec(Qx, Qy)
+    # r0, r1 = closest_pairs_rec(Rx, Ry)
+    
+    # d = min(d(q0, q1), d(r0, r1))
+    # x* = máxima coordenada x de Qx
+    
+    # S = puntos de P que están a distancia <= d de la recta x = x*
+    
+    # Construir Sy (O(n))
+    
+    # por cada punto s de Sy computar distancia contra los siguientes 15 puntos
+    #     quedarse con s y s' que minimizan esa distancia
+        
+    # if d(s, s') < d: return s, s'
+    # elif d(q0, q1) < d(r0, r1): return q0, q1
+    # else: return r0, r1
+    return 0
