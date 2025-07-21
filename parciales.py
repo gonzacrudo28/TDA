@@ -112,7 +112,7 @@ def main(mensajeros, s, t):
 #O(V*E^2)
 
 '''
-Clases de Complejidad: Hay "n" personas que trabaja en bienes raice. Cada una con un portafolio de propiedades exclusivas a la venta y un area de cobertura. Algunas coberturas se superponen con otras. Para una App de bienes raices queremos seleccionar un subconjunto de personas que no se superpongan y maximicen el numero de propiedades ofrecidas entre ellos. Probar que el problema es NP-C (HINT!: Tal vez le resulte util conjunto independiente).
+Clases de Complejidad: Hay "n" personas que trabaja en bienes raices. Cada una con un portafolio de propiedades exclusivas a la venta y un area de cobertura. Algunas coberturas se superponen con otras. Para una App de bienes raices queremos seleccionar un subconjunto de personas que no se superpongan y maximicen el numero de propiedades ofrecidas entre ellos. Probar que el problema es NP-C (HINT!: Tal vez le resulte util conjunto independiente).
 Problema de decisión (versión de tu problema)
 Entrada: Un conjunto de personas, cada una con una lista de propiedades y una región de cobertura. Un entero k.
 Pregunta: ¿Existe un subconjunto de personas cuyas coberturas no se superpongan y que en conjunto ofrezcan al menos k propiedades?
