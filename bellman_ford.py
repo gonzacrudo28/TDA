@@ -5,7 +5,7 @@ def camino_minimo_bf(grafo, origen):
         dist[v] = float("inf")
         padre[v] = None
     dist[origen] = 0
-    aristas = obtener_aristas(grafo)  # función auxiliar que devuelve lista de (u, v, peso)
+    aristas = grafo.obtener_aristas()
     for _ in range(len(grafo) - 1):
         for u, v, peso in aristas:
             if dist[u] + peso < dist[v]:
