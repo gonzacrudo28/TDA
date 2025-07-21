@@ -171,6 +171,8 @@ def max_ganancia_contenedor(productos, indice, seleccionados, capacidad_restante
     if cota < mejor_gagancia:
         return
     
+
+    
     producto = productos[indice]
 
     if producto.peso <= capacidad_restante: #and es_compatible(producto, seleccionados)
@@ -318,13 +320,13 @@ def cert_base_espacial(k, p, personas, x, y, sol):
         ganancia_total += persona.ganancia
         peso_total += persona.peso
     
-    if ganancia_total < y:tareas_restantes
+    if ganancia_total < y:
         return False
     
     if peso_total > k:
         return False
     
-    return Truetareas_restantes
+    return True
 
 # Transformacion
     # Cada elemento es una persona con su peso y ganancia
@@ -382,6 +384,7 @@ Programación dinámica: Un amigo está creando en un estudio de grabación su p
 
 def estudio(dias):
     solucion = []
+    n = len(dias)
     OPT = [0] * (n + 1)
     OPT [1] = dias[1][0]
     for i in range (2, n+1):
@@ -571,7 +574,7 @@ def bb_fabricas(fabricas, ciudades, ganancia_parcial, solucion_parcial,ciudad_ac
             usados.add(fabrica)
             ciudades[ciudad_actual] = fabrica
             nueva_ganancia = ganancia_parcial+fabrica.ganancia()
-            bb_fabricas(fabricas, ciudades, ganancia_parcial+fabrica.ganancia(), ciudad_actual + 1)
+            bb_fabricas(fabricas, ciudades, nueva_ganancia, ciudad_actual + 1)
             usados.remove(fabrica)
             ciudades[ciudad_actual] = None
     
@@ -1057,3 +1060,35 @@ def cambio_minimo(sist_monetario, dinero):
                     monedas_usadas[i] = monedas_usadas[i-moneda] + [moneda]
 
     return cant[dinero], monedas_usadas[dinero]
+
+
+'''
+Una empresa que realiza ciencia de datos debe realizar en las próximas “n” semanas procesos y cálculos intensivos. Para eso debe contratar tiempo de cómputo en un data center. Realizando una estimación conocen cuantas horas de cómputo necesitarán para cada una de las semanas. Por otro lado luego de negociar con los principales proveedores tienen 2 opciones que pueden combinar a gusto: ● Opción 1: Contratar a la empresa “Arganzón” por semana. En
+esa semana se cobra proporcional al tiempo de cómputo según un parámetro “r” (horas computo x r). ● Opción 2: Contratar a la empresa “Fuddle” por un lapso de 3 semanas contiguas. Durante el lapso contratado se paga una
+tarifa fija de “c”. Proponer una solución utilizando programación dinámica que nos indique la secuencia de elecciones a realizar para minimizar el costo total de cómputo. Analizar su complejidad temporal y espacial.'''
+
+def plan_minimo(H, r, c):
+    n = len(H)
+    dp = [0] * (n + 3) 
+    decision = [""] * n
+
+    for i in range(n - 1, -1, -1):
+        cost_arganzon = H[i] * r + dp[i + 1]
+        cost_fuddle = c + dp[i + 3]
+        if cost_arganzon <= cost_fuddle:
+            dp[i] = cost_arganzon
+            decision[i] = "A"
+        else:
+            dp[i] = cost_fuddle
+            decision[i] = "F"
+
+    elecciones = []
+    i = 0
+    while i < n:
+        if decision[i] == "A":
+            elecciones.append(("A", i))
+            i += 1
+        else:
+            elecciones.append(("F", i))
+            i += 3
+    return dp[0], elecciones
