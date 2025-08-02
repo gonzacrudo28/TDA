@@ -1,6 +1,7 @@
 from graph import Graph
 import copy
 import random
+import time
 
 def crear_grafo_inversores(inversores, incompatibilidades):
     grafo = Graph(directed=False)
@@ -241,10 +242,53 @@ if __name__ == "__main__":
 
     print("Solución final (Heurística):", solucion_final, "Total dinero:", ganancia_actual)
     
+    # PRUEBA CON MUCHOS INVERSORES Y MUCHAS ITERACIONES
+    print("Ejemplo con 100 inversores generados aleatoriamente (con tiempos):")
+    random.seed(42)
+    inversores = [f"Inv{i}" for i in range(100)]
+    aportes = {inv: random.randint(1, 1000) for inv in inversores}
 
+    incompatibilidades = {inv: [] for inv in inversores}
+    for inv in inversores:
+        posibles = [x for x in inversores if x != inv]
+        incompatibles = random.sample(posibles, k=random.randint(0, 5))
+        incompatibilidades[inv] = incompatibles
 
+    grafo = crear_grafo_inversores(inversores, incompatibilidades)
 
+  # Randomizado con 1000 iteraciones
+    t0 = time.time()
+    seleccionados_rand_1k, total_rand_1k = maximizar_dinero_inversores_randomizado_grafo(grafo, aportes, iteraciones = 1000)
+    t1 = time.time()
+    tiempo_rand_1k = t1 - t0
 
+    # Randomizado con 10000 iteraciones
+    t0 = time.time()
+    seleccionados_rand_10k, total_rand_10k = maximizar_dinero_inversores_randomizado_grafo(grafo, aportes, iteraciones = 10000)
+    t1 = time.time()
+    tiempo_rand_10k = t1 - t0
+
+    # Greedy
+    t0 = time.time()
+    seleccionados_greedy, total_greedy = maximizar_dinero_inversores_greedy(grafo, aportes)
+    t1 = time.time()
+    tiempo_greedy = t1 - t0
+
+    # Heurística sobre greedy
+    solucion_actual = set(seleccionados_greedy)
+    no_seleccionados = set(grafo.get_vertex()) - solucion_actual
+    t0 = time.time()
+    ganancia_heuristica, seleccionados_heuristica = maximizar_dinero_inversores_heuristica(
+        grafo, aportes, total_greedy, solucion_actual, no_seleccionados
+    )
+    t1 = time.time()
+    tiempo_heuristica = t1 - t0
+
+    # Resultados
+    print(f"Randomizado 1k:  total = {total_rand_1k:5d} | seleccionados = {len(seleccionados_rand_1k):2d} | tiempo = {tiempo_rand_1k:.4f} s")
+    print(f"Randomizado 10k: total = {total_rand_10k:5d} | seleccionados = {len(seleccionados_rand_10k):2d} | tiempo = {tiempo_rand_10k:.4f} s")
+    print(f"Greedy:          total = {total_greedy:5d} | seleccionados = {len(seleccionados_greedy):2d} | tiempo = {tiempo_greedy:.4f} s")
+    print(f"Heurística:      total = {ganancia_heuristica:5d} | seleccionados = {len(seleccionados_heuristica):2d} | tiempo = {tiempo_heuristica:.4f} s")
 
     
 
