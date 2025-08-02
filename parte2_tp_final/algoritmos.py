@@ -284,14 +284,8 @@ if __name__ == "__main__":
     t1 = time.time()
     tiempo_heuristica = t1 - t0
 
-    # Resultados
-    print(f"Randomizado 1k:  total = {total_rand_1k:5d} | seleccionados = {len(seleccionados_rand_1k):2d} | tiempo = {tiempo_rand_1k:.4f} s")
-    print(f"Randomizado 10k: total = {total_rand_10k:5d} | seleccionados = {len(seleccionados_rand_10k):2d} | tiempo = {tiempo_rand_10k:.4f} s")
-    print(f"Greedy:          total = {total_greedy:5d} | seleccionados = {len(seleccionados_greedy):2d} | tiempo = {tiempo_greedy:.4f} s")
-    print(f"Heurística:      total = {ganancia_heuristica:5d} | seleccionados = {len(seleccionados_heuristica):2d} | tiempo = {tiempo_heuristica:.4f} s")
-
-    
-
-    
-
-    
+# Resultados
+print(f"Randomizado 1k:  total = {total_rand_1k:5d} | seleccionados = {len(seleccionados_rand_1k):2d} | tiempo = {tiempo_rand_1k:.4f} s")
+print(f"Randomizado 10k: total = {total_rand_10k:5d} | seleccionados = {len(seleccionados_rand_10k):2d} | tiempo = {tiempo_rand_10k:.4f} s")
+print(f"Greedy:          total = {total_greedy:5d} | seleccionados = {len(seleccionados_greedy):2d} | tiempo = {tiempo_greedy:.4f} s")
+print(f"Heurística:      total = {ganancia_heuristica:5d} | seleccionados = {len(seleccionados_heuristica):2d} | tiempo = {tiempo_heuristica:.4f} s")
