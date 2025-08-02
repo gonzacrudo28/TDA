@@ -51,9 +51,9 @@ def maximizar_dinero_inversores_heuristica(
     no_seleccionados: set
 ):
 
-    mejoró = True
-    while mejoró:
-        mejoró = False
+    mejoro = True
+    while mejoro:
+        mejoro = False
         # Recorremos cada par (s ∈ solucion_actual, t ∈ no_seleccionados)
         for s in list(solucion_actual):
             for t in list(no_seleccionados):
@@ -68,9 +68,9 @@ def maximizar_dinero_inversores_heuristica(
                     solucion_actual = parcial | {t}
                     no_seleccionados = (no_seleccionados - {t}) | {s}
                     ganancia_actual = nueva_ganancia
-                    mejoró = True
+                    mejoro = True
                     break  # Reiniciamos búsqueda desde la nueva solución
-            if mejoró:
+            if mejoro:
                 break
     return ganancia_actual, list(solucion_actual)
 
